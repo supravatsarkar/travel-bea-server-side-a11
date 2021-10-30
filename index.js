@@ -4,6 +4,7 @@ const cors = require('cors');
 const port = process.env.PORT || 5000;
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
+const ObjectId = require('mongodb').ObjectId;
 
 app.use(cors());
 app.use(express.json());
@@ -25,13 +26,23 @@ async function run() {
         const database = client.db('travelbea');
         const serviceCollection = database.collection('services');
 
+        // GET API FOR ALL SERVICES
         app.get('/services', async (req, res) => {
             const cursor = serviceCollection.find({});
             const result = await cursor.toArray();
             // console.log(result);
             res.json(result);
-
         })
+
+        //GET API FOR SINGLE SERVICE
+        app.get('/booking/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id);
+            const query = { _id: ObjectId(id) };
+            const result = await serviceCollection.findOne(query);
+            res.json(result);
+        })
+
 
 
     } finally {
