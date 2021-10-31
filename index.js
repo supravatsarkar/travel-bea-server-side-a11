@@ -25,6 +25,7 @@ async function run() {
         console.log('db connect');
         const database = client.db('travelbea');
         const serviceCollection = database.collection('services');
+        const bookingCollection = database.collection('bookingData');
 
         // GET API FOR ALL SERVICES
         app.get('/services', async (req, res) => {
@@ -43,11 +44,18 @@ async function run() {
             res.json(result);
         })
 
-        //POST API ADD SERVICE
+        //ADD SERVICE POST API 
         app.post('/addservice', async (req, res) => {
             // console.log(req.body);
             const doc = req.body;
             const result = await serviceCollection.insertOne(doc);
+            res.json(result);
+        })
+
+        //BOOKING SERVICE POST API
+        app.post('/booking', async (req, res) => {
+            // console.log(req.body);
+            const result = await bookingCollection.insertOne(req.body);
             res.json(result);
         })
 
