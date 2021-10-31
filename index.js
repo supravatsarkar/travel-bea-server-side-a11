@@ -66,6 +66,15 @@ async function run() {
             res.json(result);
         })
 
+        //DELETE BOOKING API
+        app.delete('/bookings/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await bookingCollection.deleteOne(query);
+            console.log(result);
+            res.json(result);
+        })
+
 
 
     } finally {
