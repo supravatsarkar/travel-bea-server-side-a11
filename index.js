@@ -37,9 +37,17 @@ async function run() {
         //GET API FOR SINGLE SERVICE
         app.get('/booking/:id', async (req, res) => {
             const id = req.params.id;
-            console.log(id);
+            // console.log('single book hit', id);
             const query = { _id: ObjectId(id) };
             const result = await serviceCollection.findOne(query);
+            res.json(result);
+        })
+
+        //POST API ADD SERVICE
+        app.post('/addservice', async (req, res) => {
+            // console.log(req.body);
+            const doc = req.body;
+            const result = await serviceCollection.insertOne(doc);
             res.json(result);
         })
 
