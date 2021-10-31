@@ -59,6 +59,13 @@ async function run() {
             res.json(result);
         })
 
+        //GET BOOKING API
+        app.get('/bookings', async (req, res) => {
+            // console.log('Hit bookings');
+            const result = await bookingCollection.find({}).toArray();
+            res.json(result);
+        })
+
 
 
     } finally {
