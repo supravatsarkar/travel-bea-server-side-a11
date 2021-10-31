@@ -59,10 +59,13 @@ async function run() {
             res.json(result);
         })
 
-        //GET BOOKING API
-        app.get('/bookings', async (req, res) => {
-            // console.log('Hit bookings');
-            const result = await bookingCollection.find({}).toArray();
+        //GET BOOKINGS BY INDIVISUAL USER 
+        app.get('/bookings/:userEmail', async (req, res) => {
+            const userEmail = req.params.userEmail;
+            console.log(userEmail);
+            const query = { userEmail: userEmail };
+            const result = await bookingCollection.find(query).toArray();
+            console.log(result);
             res.json(result);
         })
 
