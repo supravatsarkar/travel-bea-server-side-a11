@@ -5,6 +5,7 @@ const port = process.env.PORT || 5000;
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
 const ObjectId = require('mongodb').ObjectId;
+const Object = require('mongodb').Object;
 
 app.use(cors());
 app.use(express.json());
@@ -52,7 +53,7 @@ async function run() {
             res.json(result);
         })
 
-        //BOOKING SERVICE POST API
+        //BOOKING SERVICE POST 
         app.post('/booking', async (req, res) => {
             // console.log(req.body);
             const result = await bookingCollection.insertOne(req.body);
@@ -77,6 +78,36 @@ async function run() {
             console.log(result);
             res.json(result);
         })
+
+        //GET ALL BOOKINGS FOR MANAGE BOOKINGS
+        app.get('/managebooking', async (req, res) => {
+            const result = await bookingCollection.find({}).toArray();
+            res.json(result);
+        })
+
+
+        //DELETE BOOKING FROM MANAGE BOOKING
+        app.delete('/managebooking/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { _id: ObjectId(id) };
+            const result = await bookingCollection.deleteOne(query);
+            console.log(result);
+            res.json(result);
+        })
+
+        // update status API
+        app.put('/managebooking/updatestatus/:id', async (req, res) => {
+            const msg = req.body.status;
+            const id = req.params.id;
+            console.log(msg, id)
+            const filter = { _id: ObjectId(id) };
+            const updateDoc = { $set: { status: msg } };
+            const options = { upsert: true };
+            const result = await bookingCollection.updateOne(filter, updateDoc, options);
+            console.log(result);
+            res.json(result);
+        })
+
 
 
 
