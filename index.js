@@ -4,8 +4,6 @@ const cors = require('cors');
 const port = process.env.PORT || 5000;
 const { MongoClient } = require('mongodb');
 require('dotenv').config();
-const ObjectId = require('mongodb').ObjectId;
-const Object = require('mongodb').Object;
 
 app.use(cors());
 app.use(express.json());
@@ -26,89 +24,14 @@ async function run() {
         console.log('db connect');
         const database = client.db('travelbea');
         const serviceCollection = database.collection('services');
-        const bookingCollection = database.collection('bookingData');
 
-        // GET API FOR ALL SERVICES
         app.get('/services', async (req, res) => {
             const cursor = serviceCollection.find({});
             const result = await cursor.toArray();
             // console.log(result);
             res.json(result);
+
         })
-
-        //GET API FOR SINGLE SERVICE
-        app.get('/booking/:id', async (req, res) => {
-            const id = req.params.id;
-            // console.log('single book hit', id);
-            const query = { _id: ObjectId(id) };
-            const result = await serviceCollection.findOne(query);
-            res.json(result);
-        })
-
-        //ADD SERVICE POST API 
-        app.post('/addservice', async (req, res) => {
-            // console.log(req.body);
-            const doc = req.body;
-            const result = await serviceCollection.insertOne(doc);
-            res.json(result);
-        })
-
-        //BOOKING SERVICE POST 
-        app.post('/booking', async (req, res) => {
-            // console.log(req.body);
-            const result = await bookingCollection.insertOne(req.body);
-            res.json(result);
-        })
-
-        //GET BOOKINGS BY INDIVISUAL USER 
-        app.get('/bookings/:userEmail', async (req, res) => {
-            const userEmail = req.params.userEmail;
-            console.log(userEmail);
-            const query = { userEmail: userEmail };
-            const result = await bookingCollection.find(query).toArray();
-            console.log(result);
-            res.json(result);
-        })
-
-        //DELETE BOOKING API
-        app.delete('/bookings/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const result = await bookingCollection.deleteOne(query);
-            console.log(result);
-            res.json(result);
-        })
-
-        //GET ALL BOOKINGS FOR MANAGE BOOKINGS
-        app.get('/managebooking', async (req, res) => {
-            const result = await bookingCollection.find({}).toArray();
-            res.json(result);
-        })
-
-
-        //DELETE BOOKING FROM MANAGE BOOKING
-        app.delete('/managebooking/:id', async (req, res) => {
-            const id = req.params.id;
-            const query = { _id: ObjectId(id) };
-            const result = await bookingCollection.deleteOne(query);
-            console.log(result);
-            res.json(result);
-        })
-
-        // update status API
-        app.put('/managebooking/updatestatus/:id', async (req, res) => {
-            const msg = req.body.status;
-            const id = req.params.id;
-            console.log(msg, id)
-            const filter = { _id: ObjectId(id) };
-            const updateDoc = { $set: { status: msg } };
-            const options = { upsert: true };
-            const result = await bookingCollection.updateOne(filter, updateDoc, options);
-            console.log(result);
-            res.json(result);
-        })
-
-
 
 
     } finally {
